@@ -1,5 +1,8 @@
 # user specific files and folders
 bagdirs/
+Data/
+*.bag
+*.txt
 
 # build folders
 devel/
