@@ -112,8 +112,8 @@ def create_csv_files(bagfiles_path, csv_dir_path):
     return f"{len(csvfiles)} CSV files created successfully"
 
 
-bagfiles_path = "bagdirs/rosbags-spike-1/"
-csv_dir_path = "Data/csv-spike-1/"
+bagfiles_path = "bagdirs/rosbags-noise-2/"
+csv_dir_path = "Data/csv-noise/"
 
 print(process_bag_files(bagfiles_path))
 print(create_csv_files(bagfiles_path, csv_dir_path))

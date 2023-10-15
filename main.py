@@ -13,6 +13,14 @@ from trainer import Trainer
 from evaluate import Evaluate_Model
 
 
+def load_best_model(model_path):
+    # load the model from best saved checkpoint
+    load_path = f'{model_path}-1.pt'
+    chkpt = torch.load(load_path)
+    trained_model = chkpt['model']
+    trained_model.load_state_dict(chkpt['model_sd'])
+    return trained_model
+
 def run_main():
     # load all the parameters from config.py
     device = cfg.device
@@ -61,16 +69,16 @@ def run_main():
         # Train the model from scratch
         trainer = Trainer(model, optimizer, criterion, train_loader, val_loader, device, model_path)
         trained_model, _ = trainer.train_model(max_epochs=cfg.max_epochs)
+        trained_model = load_best_model(model_path)
     elif train_flag == 'continue':
         # train the model from a saved checkpoint
         trainer = Trainer(model, optimizer, criterion, train_loader, val_loader, device, model_path)
         trained_model, _ = trainer.train_model(cfg.max_epochs, cfg.start_epoch, train)
+        trained_model = load_best_model(model_path)
     elif train_flag == 'eval':
-        # load the model from best saved checkpoint
-        load_path = f'{model_path}-1.pt'
-        chkpt = torch.load(load_path)
-        trained_model = chkpt['model']
-        trained_model.load_state_dict(chkpt['model_sd'])
+        trained_model = load_best_model(model_path)
+    else:
+        return
 
     # Evaluate the model
     evaluator = Evaluate_Model(trained_model, test_loader)

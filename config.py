@@ -22,22 +22,6 @@ adj_matrix = torch.tensor(
     dtype=torch.long,
 )
 
-# Adjacency matrix of the graph with 9 joints, planner node, and action node
-adj_matrix2 = torch.tensor(
-    [
-        [0, 1, 0, 0, 0, 0, 0, 0, 0],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0],
-        [0, 1, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 1, 0, 1, 0, 0, 0, 0],
-        [0, 0, 0, 1, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0, 1, 0, 1, 1],
-        [0, 0, 0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0, 0],
-    ],
-    dtype=torch.float,
-)
-
 # Number of nodes in the graph (number of joints in the robot)
 num_nodes = 9
 # Number of features in the input
@@ -62,8 +46,16 @@ hidden_dim = 64
 ################ Necessary Parameters to check before running the code ################
 
 project_root = "/home/simha/DeLeRA/"
-set_type = "noise"
+set_type = "all"
 csv_dir = f"Data/csv-{set_type}/"
 dataset_path = f"Data/processed/{set_type}-dataset.pt"
 model_path = f"runs/STGCNLSTM-{set_type}/model-top"
-train_flag = 'fresh'  # ['fresh', 'continue', 'eval']
+
+'''
+train_flag: default: 'fresh'
+    'fresh' - train from start,
+    'continue'- continue training from a saved checkpoint and start_epoch,
+    'eval' - evaluate the model
+    'none' - do nothing. Used for creating the dataset
+'''
+train_flag = 'eval'  
