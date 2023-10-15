@@ -3,6 +3,8 @@ bagdirs/
 Data/
 *.bag
 *.txt
+*.csv
+*.ipynb
 
 # build folders
 devel/
