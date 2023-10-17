@@ -2,6 +2,7 @@
 bagdirs/
 Data/
 wandb/
+runs/
 *.bag
 *.txt
 *.csv
