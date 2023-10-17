@@ -61,7 +61,7 @@ def run_main():
 
     # balance the train dataset
     balancer = Data_Balancer(dataset)
-    dataset = balancer.balance()
+    dataset = balancer.random_undersampling()
     class_samples = balancer.check_balancer()
     class_weights = torch.tensor(balancer.get_class_weights())
     print(f"class samples: {class_samples}")

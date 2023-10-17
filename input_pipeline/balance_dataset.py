@@ -23,7 +23,7 @@ class Data_Balancer:
         self.avg_len = 0
         self.shuffle_dataset()
 
-    def balance(self):
+    def random_undersampling(self):
         for i in tqdm(range(self.dataset_len), desc="Balancing dataset"):
             if (self.dataset[i].y == 0).all():
                 self.data0.append(self.dataset[i])
