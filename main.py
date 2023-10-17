@@ -7,39 +7,65 @@ import torch.nn as nn
 import torch.optim as optim
 
 import config as cfg
-from input_pipeline.graph_dataloader import Temporal_Graph_Dataset, Static_Graph_Dataset
-from models.graph_models import GCN, STGCNLSTM
-from trainer import Trainer
+from input_pipeline.graph_dataloader import Temporal_Graph_Dataset
+from input_pipeline.balance_dataset import Data_Balancer
+from models.graph_models import STGCNLSTM, STGCN4LSTM
+from trainer import Trainer, create_train_loss_graph
 from evaluate import Evaluate_Model
 
 
 def load_best_model(model_path):
     # load the model from best saved checkpoint
-    load_path = f'{model_path}-1.pt'
+    load_path = f"{model_path}-1.pt"
     chkpt = torch.load(load_path)
-    trained_model = chkpt['model']
-    trained_model.load_state_dict(chkpt['model_sd'])
+    trained_model = chkpt["model"]
+    trained_model.load_state_dict(chkpt["model_sd"])
     return trained_model
+
+
+def get_model(model_name, model_configs):
+    if model_name == "STGCNLSTM":
+        model = STGCNLSTM(model_configs)
+    elif model_name == "STGCN4LSTM":
+        model = STGCN4LSTM(model_configs)
+    else:
+        raise f"Model {model_name} not implemented"
+    return model
+
 
 def run_main():
     # load all the parameters from config.py
     device = cfg.device
-    dataset_path = cfg.dataset_path
-    csv_dir = cfg.csv_dir
-    batch_size=cfg.batch_size
+    batch_size = cfg.batch_size
     model_path = cfg.model_path
     train_flag = cfg.train_flag
 
     # check if the model path exists
-    model_path_dir = model_path.rsplit('/', 1)[0]
+    model_path_dir = model_path.rsplit("/", 1)[0]
     Path(model_path_dir).mkdir(parents=True, exist_ok=True)
+
+    loss_graph_path = f"{model_path_dir}/loss_graph.png"
+    save_path = f"Images/{cfg.set_type}-cm-test.png"
 
     # check the device to run the training on
     print(f"Running on: {device}")
 
     # load the dataset
-    load = Path(dataset_path).is_file()
-    dataset = Temporal_Graph_Dataset(dataset_path, csv_dir, load)
+    dataset_configs = {
+        "WIN_SIZE_IN": cfg.window_size_in,
+        "WIN_SIZE_OUT": cfg.window_size_out,
+        "WIN_SHIFT": cfg.window_shift,
+    }
+    dataset = Temporal_Graph_Dataset(dataset_configs)
+    print(f"Imbalanced samples: {len(dataset)}")
+
+    # balance the train dataset
+    balancer = Data_Balancer(dataset)
+    dataset = balancer.balance()
+    class_samples = balancer.check_balancer()
+    class_weights = torch.tensor(balancer.get_class_weights())
+    print(f"class samples: {class_samples}")
+    print(f"class weights: {class_weights}")
 
     # split the dataset into train, val, and test
     train, test_data = train_test_split(dataset, test_size=0.2, random_state=42)
@@ -54,39 +80,74 @@ def run_main():
     test_loader = DataLoader(test_data, batch_size=batch_size)
 
     # Instantiate the GCN model
-    model = STGCNLSTM(
-        num_nodes=cfg.num_nodes,
-        num_features=cfg.num_features,
-        num_classes=cfg.num_classes,
-        win_size_in=cfg.window_size_in,
-        win_size_out=cfg.window_size_out,
-    )
+    model_configs = {
+        "NUM_NODES": cfg.num_nodes,
+        "NUM_FEATURES": cfg.num_features,
+        "NUM_CLASSES": cfg.num_classes,
+        "WIN_SIZE_IN": cfg.window_size_in,
+        "WIN_SIZE_OUT": cfg.window_size_out,
+        "HIDDEN_DIM_1": cfg.hidden_dim_1,
+        "HIDDEN_DIM_2": cfg.hidden_dim_2,
+        "NUM_LAYERS": cfg.num_layers,
+    }
+    model = get_model(cfg.model_name, model_configs)
     # Define loss function and optimizer
-    criterion = nn.CrossEntropyLoss()
+    # class_weights = torch.tensor(
+    #     [
+    #         0.14537109434604645,
+    #         516.9898071289062,
+    #         11.02491569519043,
+    #         65.79869842529297,
+    #         5428.39306640625,
+    #         187.9962921142578,
+    #         129.6332550048828,
+    #     ]
+    # )
+    criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
+    # criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=cfg.learning_rate)
 
-    if train_flag == 'fresh':
+    if train_flag == "fresh":
         # Train the model from scratch
-        trainer = Trainer(model, optimizer, criterion, train_loader, val_loader, device, model_path)
-        trained_model, _ = trainer.train_model(max_epochs=cfg.max_epochs)
+        trainer = Trainer(
+            model, optimizer, criterion, train_loader, val_loader, device, model_path
+        )
+        trained_model, (t_losses, v_losses) = trainer.train_model(
+            max_epochs=cfg.max_epochs
+        )
+        # create the train loss graph
+        create_train_loss_graph(
+            t_losses, v_losses, save_flag=True, save_path=loss_graph_path
+        )
+        # load the best model from the saved checkpoints
         trained_model = load_best_model(model_path)
-    elif train_flag == 'continue':
+    elif train_flag == "continue":
         # train the model from a saved checkpoint
-        trainer = Trainer(model, optimizer, criterion, train_loader, val_loader, device, model_path)
-        trained_model, _ = trainer.train_model(cfg.max_epochs, cfg.start_epoch, train)
+        trainer = Trainer(
+            model, optimizer, criterion, train_loader, val_loader, device, model_path
+        )
+        trained_model, (t_losses, v_losses) = trainer.train_model(
+            cfg.max_epochs, cfg.start_epoch, train
+        )
+        # create the train loss graph
+        create_train_loss_graph(t_losses, v_losses, save_flag=False)
+        # load the best model from the saved checkpoints
         trained_model = load_best_model(model_path)
-    elif train_flag == 'eval':
+    elif train_flag == "eval":
+        # load the best model from the saved checkpoints
         trained_model = load_best_model(model_path)
     else:
         return
 
     # Evaluate the model
-    evaluator = Evaluate_Model(trained_model, test_loader)
+    evaluator = Evaluate_Model(trained_model, test_loader, device)
     predicts, targets = evaluator.evaluate()
-    precision, recall, f1 = evaluator.check_metrics(predicts, targets)
-    print(f"Precision: {precision:.4f}, Recall: {recall:.4f}, F1: {f1:.4f}")
-    evaluator.create_confusion_matrix(predicts, targets)
-    
+    class_report = evaluator.check_classification_report(predicts, targets)
+    print(class_report)
+    evaluator.create_confusion_matrix(
+        predicts, targets, save_flag=True, save_path=save_path
+    )
+
 
 if __name__ == "__main__":
     run_main()

@@ -2,14 +2,18 @@ import torch
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
-
-import config as cfg
+from sklearn.metrics import (
+    confusion_matrix,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report,
+)
 
 
 class Evaluate_Model:
-    def __init__(self, model, test_loader):
-        self.device = cfg.device
+    def __init__(self, model, test_loader, device):
+        self.device = device
         self.model = model
         self.test_loader = test_loader
         self.predicts = []
@@ -36,12 +40,37 @@ class Evaluate_Model:
         f1 = f1_score(targets, predicts, average="macro")
         return precision, recall, f1
 
-    def create_confusion_matrix(self, predicts, targets):
+    def check_classification_report(self, predicts, targets):
         predicts = np.concatenate(predicts).ravel()
         targets = np.concatenate(targets).ravel()
-        cm = confusion_matrix(targets, predicts, labels=[0, 1, 2, 3, 4, 5, 6]).T
+        labels = [0, 1, 2, 3, 4, 5, 6]
+        target_names = [
+            "no fe",
+            "ctrl fail",
+            "crit acc",
+            "pick fail",
+            "rel fail",
+            'collision',
+            "thrown",
+        ]
+        class_report = classification_report(
+            targets, predicts, labels=labels, target_names=target_names, zero_division=0
+        )
+        return class_report
+
+    def create_confusion_matrix(
+        self, predicts, targets, save_flag=True, save_path=None
+    ):
+        predicts = np.concatenate(predicts).ravel()
+        targets = np.concatenate(targets).ravel()
+        labels = [0, 1, 2, 3, 4, 5, 6]
+        cm = confusion_matrix(targets, predicts, labels=labels).T
         plt.figure(figsize=(10, 10))
         sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
         plt.xlabel("True Label")
         plt.ylabel("Predicted Label")
-        plt.show()
+        plt.title("Confusion Matrix")
+        if save_flag and save_path is not None:
+            plt.savefig(save_path)
+        else:
+            plt.show()
