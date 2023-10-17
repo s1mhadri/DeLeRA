@@ -7,6 +7,7 @@ from torch_geometric.data import Data
 from tqdm import tqdm
 
 import config as cfg
+from utils.util_math import z_score
 
 
 class Temporal_Graph_Dataset(Dataset):
@@ -71,6 +72,7 @@ class Temporal_Graph_Dataset(Dataset):
         data_list = []
         for file in tqdm(files, desc="Creating dataset"):
             filedata = torch.tensor(pd.read_csv(file).values, dtype=torch.float)
+            filedata = self.normalize_data(filedata)
             for i in range(
                 (filedata.shape[0] - self.win_size_total) // self.win_shift + 1
             ):
@@ -109,3 +111,7 @@ class Temporal_Graph_Dataset(Dataset):
             torch.save(data_list, self.processed_dir)
             print("Dataset created and saved at: ", self.processed_dir)
         return data_list
+    
+    def normalize_data(self, data):
+        mean, std = torch.load(cfg.mean_std_path)
+        return z_score(data, mean, std)
