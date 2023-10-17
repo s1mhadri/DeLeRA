@@ -20,9 +20,9 @@ class Temporal_Graph_Dataset(Dataset):
     """
 
     def __init__(self, configs, load=False, save=False):
-        self.win_size_in = configs['WIN_SIZE_IN']
-        self.win_size_out = configs['WIN_SIZE_OUT']
-        self.win_shift = configs['WIN_SHIFT']
+        self.win_size_in = configs["WIN_SIZE_IN"]
+        self.win_size_out = configs["WIN_SIZE_OUT"]
+        self.win_shift = configs["WIN_SHIFT"]
         self.win_size_total = self.win_size_in + self.win_size_out
 
         self.processed_dir = cfg.dataset_path
@@ -55,7 +55,7 @@ class Temporal_Graph_Dataset(Dataset):
     @property
     def num_nodes(self):
         return self._num_nodes
-    
+
     @property
     def num_classes(self):
         return self._num_classes
@@ -71,7 +71,9 @@ class Temporal_Graph_Dataset(Dataset):
         data_list = []
         for file in tqdm(files, desc="Creating dataset"):
             filedata = torch.tensor(pd.read_csv(file).values, dtype=torch.float)
-            for i in range((filedata.shape[0] - self.win_size_total) // self.win_shift + 1):
+            for i in range(
+                (filedata.shape[0] - self.win_size_total) // self.win_shift + 1
+            ):
                 joint_feats = filedata[
                     i * self.win_shift : i * self.win_shift + self.win_size_in, 3:-2
                 ]  # (win_size_in, 27)
@@ -89,7 +91,10 @@ class Temporal_Graph_Dataset(Dataset):
                 )  # (win_size_in, num_nodes, num_features)
                 labels = torch.unsqueeze(
                     filedata[
-                        i * self.win_shift + self.win_size_in : i * self.win_shift + self.win_size_total, -1
+                        i * self.win_shift
+                        + self.win_size_in : i * self.win_shift
+                        + self.win_size_total,
+                        -1,
                     ],
                     0,
                 )

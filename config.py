@@ -65,7 +65,7 @@ num_layers = 2
 
 project_root = "/home/simha/DeLeRA/"
 
-set_type = "spike"
+set_type = "temp"
 csv_dir = f"Data/csv-{set_type}/"
 dataset_path = f"Data/processed/{set_type}-dataset.pt"
 
@@ -79,4 +79,4 @@ train_flag: default: 'fresh'
     'eval' - evaluate the model
     'none' - do nothing. Used for creating the dataset
 """
-train_flag = "fresh"
+train_flag = "none"

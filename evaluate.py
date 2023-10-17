@@ -50,7 +50,7 @@ class Evaluate_Model:
             "crit acc",
             "pick fail",
             "rel fail",
-            'collision',
+            "collision",
             "thrown",
         ]
         class_report = classification_report(

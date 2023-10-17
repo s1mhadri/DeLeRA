@@ -33,7 +33,9 @@ class Trainer:
         self.optimizer.step()
         return loss.item()
 
-    def train_model(self, max_epochs, start_epoch=0, train_flag="fresh", log_flag=False):
+    def train_model(
+        self, max_epochs, start_epoch=0, train_flag="fresh", log_flag=False
+    ):
         if train_flag == "fresh":
             start_epoch = 0
         elif train_flag == "continue" and self.load_model() == False:

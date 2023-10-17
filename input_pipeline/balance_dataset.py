@@ -47,7 +47,7 @@ class Data_Balancer:
                 ]
             )
         )
-        bal_data = self.data0[:self.avg_len]
+        bal_data = self.data0[: self.avg_len]
         bal_data.extend(self.data1)
         bal_data.extend(self.data2)
         bal_data.extend(self.data3)
@@ -61,23 +61,23 @@ class Data_Balancer:
         return bal_data
 
     def check_balancer(self):
-        return (
-            [
-                # len(self.data0),
-                self.avg_len,
-                len(self.data1),
-                len(self.data2),
-                len(self.data3),
-                len(self.data4),
-                len(self.data5),
-                len(self.data6),
-            ]
-        )
-    
+        return [
+            # len(self.data0),
+            self.avg_len,
+            len(self.data1),
+            len(self.data2),
+            len(self.data3),
+            len(self.data4),
+            len(self.data5),
+            len(self.data6),
+        ]
+
     def get_class_weights(self):
         num_classes = 7
         class_samples = self.check_balancer()
         total_samples = sum(class_samples)
-        class_weights = [total_samples / (num_classes * class_samples[i]) for i in range(num_classes)]
-        
+        class_weights = [
+            total_samples / (num_classes * class_samples[i]) for i in range(num_classes)
+        ]
+
         return class_weights
