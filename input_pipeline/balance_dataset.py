@@ -2,6 +2,10 @@ import numpy as np
 from tqdm import tqdm
 import torch
 
+import random
+
+random.seed(42)
+
 
 class Data_Balancer:
     def __init__(self, imbal_dataset, save=False, save_path=None):
@@ -17,6 +21,7 @@ class Data_Balancer:
         self.data5 = []
         self.data6 = []
         self.avg_len = 0
+        self.shuffle_dataset()
 
     def balance(self):
         for i in tqdm(range(self.dataset_len), desc="Balancing dataset"):
@@ -60,6 +65,12 @@ class Data_Balancer:
 
         return bal_data
 
+    def shuffle_dataset(self):
+        indices = list(range(len(self.dataset)))
+        random.shuffle(indices)
+        shuffled_data_list = [self.dataset[i] for i in indices]
+        self.dataset = shuffled_data_list
+
     def check_balancer(self):
         return [
             # len(self.data0),
@@ -77,7 +88,10 @@ class Data_Balancer:
         class_samples = self.check_balancer()
         total_samples = sum(class_samples)
         class_weights = [
-            total_samples / (num_classes * class_samples[i]) for i in range(num_classes)
+            total_samples / (num_classes * class_samples[i])
+            if class_samples[i] != 0
+            else 0
+            for i in range(num_classes)
         ]
 
         return class_weights
