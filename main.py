@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 import config as cfg
-from input_pipeline.graph_dataloader import Temporal_Graph_Dataset
+from input_pipeline.graph_dataloader import Temporal_Graph_Dataset, Balanced_Dataset
 from input_pipeline.balance_dataset import Data_Balancer
 from models.graph_models import STGCNLSTM, STGCN4LSTM
 from trainer import Trainer, create_train_loss_graph
@@ -44,26 +44,29 @@ def run_main():
     model_path_dir = model_path.rsplit("/", 1)[0]
     Path(model_path_dir).mkdir(parents=True, exist_ok=True)
 
-    loss_graph_path = f"{model_path_dir}/loss_graph.png"
-    save_path = f"Images/{cfg.set_type}-cm-test.png"
+    loss_graph_path = cfg.loss_graph_save_path
+    save_path = cfg.cm_save_path
 
     # check the device to run the training on
     print(f"Running on: {device}")
 
     # load the dataset
-    dataset_configs = {
-        "WIN_SIZE_IN": cfg.window_size_in,
-        "WIN_SIZE_OUT": cfg.window_size_out,
-        "WIN_SHIFT": cfg.window_shift,
-    }
-    dataset = Temporal_Graph_Dataset(dataset_configs)
-    print(f"Imbalanced samples: {len(dataset)}")
+    # dataset_configs = {
+    #     "WIN_SIZE_IN": cfg.window_size_in,
+    #     "WIN_SIZE_OUT": cfg.window_size_out,
+    #     "WIN_SHIFT": cfg.window_shift,
+    # }
+    # dataset = Temporal_Graph_Dataset(dataset_configs, load=True)
+    # print(f"Imbalanced samples: {len(dataset)}")
+
+    bal_dataloader = Balanced_Dataset(cfg.dataset_path)
+    dataset, class_weights, class_samples = bal_dataloader.load_balanced_dataset()
 
     # balance the train dataset
-    balancer = Data_Balancer(dataset)
-    dataset = balancer.random_undersampling()
-    class_samples = balancer.check_balancer()
-    class_weights = torch.tensor(balancer.get_class_weights())
+    # balancer = Data_Balancer(dataset, save=False)
+    # dataset = balancer.random_undersampling(type="max")
+    # class_samples = balancer.check_balancer()
+    # class_weights = torch.tensor(balancer.get_class_weights())
     print(f"class samples: {class_samples}")
     print(f"class weights: {class_weights}")
 
@@ -89,20 +92,12 @@ def run_main():
         "HIDDEN_DIM_1": cfg.hidden_dim_1,
         "HIDDEN_DIM_2": cfg.hidden_dim_2,
         "NUM_LAYERS": cfg.num_layers,
+        "DROPOUT_RATE": cfg.dropout_rate,
     }
     model = get_model(cfg.model_name, model_configs)
+    # print(model)
     # Define loss function and optimizer
-    # class_weights = torch.tensor(
-    #     [
-    #         0.14537109434604645,
-    #         516.9898071289062,
-    #         11.02491569519043,
-    #         65.79869842529297,
-    #         5428.39306640625,
-    #         187.9962921142578,
-    #         129.6332550048828,
-    #     ]
-    # )
+    class_weights = torch.tensor(class_weights)
     criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
     # criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=cfg.learning_rate)

@@ -45,32 +45,41 @@ num_features = 5
 # Number of fault classes
 num_classes = 7
 
-#################### Optional Parameters to change ####################
+mean_std_path = "Data/normal_params/mean_std.pt"
 
-window_size_in = 100
+#################### Optional Parameters to change ####################
+start_epoch = 0
+
+window_size_in = 50
 window_size_out = 10
 window_shift = 1
 
 batch_size = 16
-start_epoch = 0
-max_epochs = 5
+max_epochs = 10
 learning_rate = 0.001
 
 hidden_dim_1 = 64
 hidden_dim_2 = 32
 
 num_layers = 2
+dropout_rate = 0
 
 ################ Necessary Parameters to check before running the code ################
 
 project_root = "/home/simha/DeLeRA/"
 
-set_type = "temp"
+set_type = "all"
+bal_type = "max"
+run_num = 0
+
 csv_dir = f"Data/csv-{set_type}/"
-dataset_path = f"Data/processed/{set_type}-dataset.pt"
+dataset_path = f"Data/processed_bal/dataset-{window_size_in}-{window_size_out}-{window_shift}.pt"
 
 model_name = "STGCN4LSTM"
-model_path = f"runs/{model_name}-{set_type}/model-top"
+model_path = f"runs/run{run_num}-{model_name}-{set_type}/model-top"
+
+loss_graph_save_path = f"Images/loss_graphs/run-{run_num}.png"
+cm_save_path = f"Images/confusion_matrices/run-{run_num}.png"
 
 """
 train_flag: default: 'fresh'

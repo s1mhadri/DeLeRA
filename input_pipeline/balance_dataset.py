@@ -20,10 +20,10 @@ class Data_Balancer:
         self.data4 = []
         self.data5 = []
         self.data6 = []
-        self.avg_len = 0
+        self.len0 = 0
         self.shuffle_dataset()
 
-    def random_undersampling(self):
+    def random_undersampling(self, type="avg"):
         for i in tqdm(range(self.dataset_len), desc="Balancing dataset"):
             if (self.dataset[i].y == 0).all():
                 self.data0.append(self.dataset[i])
@@ -40,19 +40,33 @@ class Data_Balancer:
             if (self.dataset[i].y == 6).any():
                 self.data6.append(self.dataset[i])
 
-        self.avg_len = int(
-            np.mean(
-                [
-                    len(self.data1),
-                    len(self.data2),
-                    len(self.data3),
-                    len(self.data4),
-                    len(self.data5),
-                    len(self.data6),
-                ]
+        if type == "max":
+            self.len0 = int(
+                np.max(
+                    [
+                        len(self.data1),
+                        len(self.data2),
+                        len(self.data3),
+                        len(self.data4),
+                        len(self.data5),
+                        len(self.data6),
+                    ]
+                )
             )
-        )
-        bal_data = self.data0[: self.avg_len]
+        else:
+            self.len0 = int(
+                np.mean(
+                    [
+                        len(self.data1),
+                        len(self.data2),
+                        len(self.data3),
+                        len(self.data4),
+                        len(self.data5),
+                        len(self.data6),
+                    ]
+                )
+            )
+        bal_data = self.data0[: self.len0]
         bal_data.extend(self.data1)
         bal_data.extend(self.data2)
         bal_data.extend(self.data3)
@@ -61,7 +75,9 @@ class Data_Balancer:
         bal_data.extend(self.data6)
 
         if self.save:
-            torch.save(bal_data, self.save_path)
+            class_samples = self.check_balancer()
+            class_weights = self.get_class_weights()
+            torch.save((bal_data, class_weights, class_samples), self.save_path)
 
         return bal_data
 
@@ -74,7 +90,7 @@ class Data_Balancer:
     def check_balancer(self):
         return [
             # len(self.data0),
-            self.avg_len,
+            self.len0,
             len(self.data1),
             len(self.data2),
             len(self.data3),

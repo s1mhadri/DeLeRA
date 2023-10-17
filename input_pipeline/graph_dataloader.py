@@ -10,6 +10,40 @@ import config as cfg
 from utils.util_math import z_score
 
 
+class Balanced_Dataset(Dataset):
+    def __init__(self, path):
+        self.path = path
+        self._num_nodes = cfg.num_nodes
+        self._num_features = cfg.num_features
+        self._num_classes = cfg.num_classes
+        self.data_list = None
+        self.class_weights = None
+        self.class_samples = None
+    
+    def __len__(self):
+        return len(self.data_list)
+
+    def __getitem__(self, idx):
+        return self.data_list[idx]
+
+    @property
+    def num_features(self):
+        return self._num_features
+
+    @property
+    def num_nodes(self):
+        return self._num_nodes
+
+    @property
+    def num_classes(self):
+        return self._num_classes
+
+    def load_balanced_dataset(self):
+        print("Loading dataset from: ", self.path)
+        self.data_list, self.class_weights, self.class_samples = torch.load(self.path)
+        return self.data_list, self.class_weights, self.class_samples
+
+
 class Temporal_Graph_Dataset(Dataset):
     """
     Dataset class for creating or loading graph data from csv files
