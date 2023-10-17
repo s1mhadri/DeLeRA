@@ -1,6 +1,7 @@
 # user specific files and folders
 bagdirs/
 Data/
+wandb/
 *.bag
 *.txt
 *.csv
