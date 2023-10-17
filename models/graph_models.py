@@ -81,6 +81,7 @@ class STGCN4LSTM(nn.Module):
         self.hidden_dim_1 = configs["HIDDEN_DIM_1"]
         self.hidden_dim_2 = configs["HIDDEN_DIM_2"]
         self.num_layers = configs["NUM_LAYERS"]
+        self.dropout_rate = configs["DROPOUT_RATE"]
 
         # Spatial Graph Convolution Layers
         self.conv1 = GCNConv(self.num_features, self.hidden_dim_1)
@@ -92,6 +93,7 @@ class STGCN4LSTM(nn.Module):
             self.num_nodes * self.num_features,
             self.hidden_dim_1,
             batch_first=True,
+            dropout=self.dropout_rate,
             num_layers=self.num_layers,
         )
         # Fully Connected Layers
@@ -121,6 +123,8 @@ class STGCN4LSTM(nn.Module):
 
         batch_size = data.num_graphs
         x = x.view(batch_size, self.win_size_in, -1)  # (B, WI, N*F)
+        # Apply dropout
+        x = F.dropout(x, self.dropout_rate, training=self.training)
         # Apply LSTM
         x, _ = self.lstm(x)  # (B, WI, H1)
         x = x[:, -self.win_size_out :, :]  # (B, WO, H1)
