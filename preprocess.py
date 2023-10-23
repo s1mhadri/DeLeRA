@@ -13,32 +13,33 @@ from input_pipeline.balance_dataset import Data_Balancer
 # print(process_bag_files(bagfiles_path))
 # print(create_csv_files(bagfiles_path, csv_dir_path))
 
-win_size_in = [25, 35, 50, 60, 75, 90]
-win_size_out = [5, 10, 15]
+win_size_in = [60]
+win_size_out = [15]
 win_shift = [1, 3, 5]
 
 
-# for wi in win_size_in:
-#     for wo in win_size_out:
-#         for ws in win_shift:
-#             dataset_path = f"Data/processed_bal/dataset-{wi}-{wo}-{ws}.pt"
-#             dataset_configs = {
-#                 "WIN_SIZE_IN": wi,
-#                 "WIN_SIZE_OUT": wo,
-#                 "WIN_SHIFT": ws,
-#             }
-#             dataset = Temporal_Graph_Dataset(dataset_configs)
-#             balancer = Data_Balancer(dataset, save=True, save_path=dataset_path)
-#             dataset = balancer.random_undersampling(type="max")
-#             print(f"balanced samples: {len(dataset)}")
-#             # clear the memory
-#             del dataset
+for wi in win_size_in:
+    for wo in win_size_out:
+        for ws in win_shift:
+            print(f"win_size_in: {wi}, win_size_out: {wo}, win_shift: {ws}")
+            dataset_path = f"Data/processed_bal/dataset-{wi}-{wo}-{ws}.pt"
+            dataset_configs = {
+                "WIN_SIZE_IN": wi,
+                "WIN_SIZE_OUT": wo,
+                "WIN_SHIFT": ws,
+            }
+            dataset = Temporal_Graph_Dataset(dataset_configs)
+            balancer = Data_Balancer(dataset, save=True, save_path=dataset_path)
+            dataset = balancer.random_undersampling(type="max")
+            print(f"balanced samples: {len(dataset)}")
+            # clear the memory
+            del dataset
 
-bal_dataloader = Balanced_Dataset(cfg.dataset_path)
-dataset, class_weights, class_samples = bal_dataloader.load_balanced_dataset()
-print(f"balanced samples: {len(dataset)}")
-print(f"class samples: {class_samples}")
-print(f"class weights: {class_weights}")
+# bal_dataloader = Balanced_Dataset(cfg.dataset_path)
+# dataset, class_weights, class_samples = bal_dataloader.load_balanced_dataset()
+# print(f"balanced samples: {len(dataset)}")
+# print(f"class samples: {class_samples}")
+# print(f"class weights: {class_weights}")
 
 # # load the dataset
 # dataset_configs = {
