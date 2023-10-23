@@ -223,19 +223,235 @@ Epoch [20/20], Loss: 0.1637, Val Loss: 0.1769
 
 ## run-5
 ### configs
+model_name = "LSTM"  
+
+window_size_in = 50  
+window_size_out = 10  
+window_shift = 1  
+
+batch_size = 16  
+max_epochs = 10  
+learning_rate = 0.001  
+
+hidden_dim_1 = 64  
+hidden_dim_2 = 32  
+
+num_layers = 2  
+dropout_rate = 0  
+
 ### dataset
+Loading dataset from:  Data/processed_bal/dataset-50-10-1.pt  
+class samples: [21236, 5991, 21236, 7251, 145, 1878, 3621]  
+class weights: [0.4127626940774426, 1.4630994110212938, 0.4127626940774426, 1.2088578915223516, 60.4512315270936, 4.6674273543283125, 2.420720400836391]  
+Train samples: 39268, Val samples: 9818, Test samples: 12272  
+
 ### training
 ### results
+|     Class     | Precision |  Recall  | F1-Score | Support |
+|---------------|-----------|----------|----------|---------|
+|     no fe     |   0.96    |   0.80   |   0.87   |  72,394 |
+|   ctrl fail   |   0.46    |   0.90   |   0.61   |  5,143  |
+|    crit acc   |   0.84    |   0.86   |   0.85   |  29,386 |
+|   pick fail   |   0.80    |   0.98   |   0.88   |  9,631  |
+|    rel fail   |   0.20    |   0.99   |   0.33   |    93   |
+|   collision   |   0.55    |   0.94   |   0.69   |  2,128  |
+|     thrown    |   0.68    |   0.97   |   0.80   |  3,945  |
+|   Accuracy    |           |          |   0.84   | 122,720 |
+|   Macro Avg   |   0.64    |   0.92   |   0.72   | 122,720 |
+| Weighted Avg  |   0.88    |   0.84   |   0.85   | 122,720 |
 
 
 ## run-6
 ### configs
+model_name = "STGCN4LSTM"  
+
+window_size_in = 50  
+window_size_out = 10  
+window_shift = 1  
+
+batch_size = 16  
+max_epochs = 10  
+learning_rate = 0.001  
+
+hidden_dim_1 = 64  
+hidden_dim_2 = 32  
+
+num_layers = 2  
+dropout_rate = 0  
+
 ### dataset
+Loading dataset from:  Data/processed_bal/dataset-50-10-1.pt  
+class samples: [21236, 5991, 21236, 7251, 145, 1878, 3621]  
+class weights: [0.4127626940774426, 1.4630994110212938, 0.4127626940774426, 1.2088578915223516, 60.4512315270936, 4.6674273543283125, 2.420720400836391]  
+Train samples: 39268, Val samples: 9818, Test samples: 12272  
+
+### training
+### results
+|     Class     | Precision |  Recall  | F1-Score | Support |
+|---------------|-----------|----------|----------|---------|
+|     no fe     |   0.94    |   0.83   |   0.88   |  72,394 |
+|   ctrl fail   |   0.50    |   0.87   |   0.63   |  5,143  |
+|    crit acc   |   0.87    |   0.82   |   0.84   |  29,386 |
+|   pick fail   |   0.80    |   0.98   |   0.88   |  9,631  |
+|    rel fail   |   0.22    |   1.00   |   0.35   |    93   |
+|   collision   |   0.52    |   0.95   |   0.67   |  2,128  |
+|     thrown    |   0.62    |   0.98   |   0.76   |  3,945  |
+|   Accuracy    |           |          |   0.85   | 122,720 |
+|   Macro Avg   |   0.64    |   0.92   |   0.72   | 122,720 |
+| Weighted Avg  |   0.88    |   0.85   |   0.85   | 122,720 |
+
+
+## run-7
+### configs
+model_name = "STGATLSTM"  
+
+window_size_in = 50  
+window_size_out = 10  
+window_shift = 1  
+
+batch_size = 16  
+max_epochs = 10  
+learning_rate = 0.001  
+
+hidden_dim_1 = 64  
+hidden_dim_2 = 32  
+
+num_layers = 2  
+dropout_rate = 0  
+
+### dataset
+Loading dataset from:  Data/processed_bal/dataset-50-10-1.pt  
+class samples: [21236, 5991, 21236, 7251, 145, 1878, 3621]  
+class weights: [0.4127626940774426, 1.4630994110212938, 0.4127626940774426, 1.2088578915223516, 60.4512315270936, 4.6674273543283125, 2.420720400836391]  
+Train samples: 39268, Val samples: 9818, Test samples: 12272  
+
+### training
+### results
+|     Class     | Precision |  Recall  | F1-Score | Support |
+|---------------|-----------|----------|----------|---------|
+|     no fe     |   0.94    |   0.84   |   0.88   |  72,394 |
+|   ctrl fail   |   0.52    |   0.87   |   0.65   |  5,143  |
+|    crit acc   |   0.87    |   0.83   |   0.85   |  29,386 |
+|   pick fail   |   0.81    |   0.97   |   0.89   |  9,631  |
+|    rel fail   |   0.29    |   1.00   |   0.45   |    93   |
+|   collision   |   0.55    |   0.98   |   0.71   |  2,128  |
+|     thrown    |   0.66    |   0.98   |   0.79   |  3,945  |
+|   Accuracy    |           |          |   0.85   | 122,720 |
+|   Macro Avg   |   0.66    |   0.92   |   0.75   | 122,720 |
+| Weighted Avg  |   0.88    |   0.85   |   0.86   | 122,720 |
+
+
+
+
+## run-8
+### configs
+model_name = "RNN"  
+
+window_size_in = 50  
+window_size_out = 10  
+window_shift = 1  
+
+batch_size = 16  
+max_epochs = 10  
+learning_rate = 0.001  
+
+hidden_dim_1 = 64  
+hidden_dim_2 = 32  
+
+num_layers = 2  
+dropout_rate = 0
+
+### dataset
+Loading dataset from:  Data/processed_bal/dataset-50-10-1.pt  
+class samples: [21236, 5991, 21236, 7251, 145, 1878, 3621]  
+class weights: [0.4127626940774426, 1.4630994110212938, 0.4127626940774426, 1.2088578915223516, 60.4512315270936, 4.6674273543283125, 2.420720400836391]  
+Train samples: 39268, Val samples: 9818, Test samples: 12272  
+
+### training
+### results
+|     Class     | Precision |  Recall  | F1-Score | Support |
+|---------------|-----------|----------|----------|---------|
+|     no fe     |   0.92    |   0.78   |   0.84   |  72,394 |
+|   ctrl fail   |   0.44    |   0.83   |   0.58   |  5,143  |
+|    crit acc   |   0.82    |   0.72   |   0.77   |  29,386 |
+|   pick fail   |   0.75    |   0.97   |   0.85   |  9,631  |
+|    rel fail   |   0.17    |   0.96   |   0.29   |    93   |
+|   collision   |   0.36    |   0.94   |   0.52   |  2,128  |
+|     thrown    |   0.55    |   0.94   |   0.69   |  3,945  |
+|   Accuracy    |           |          |   0.79   | 122,720 |
+|   Macro Avg   |   0.57    |   0.88   |   0.65   | 122,720 |
+| Weighted Avg  |   0.84    |   0.79   |   0.80   | 122,720 |
+
+
+## run-9
+### configs
+model_name = "STGATLSTM"  
+
+window_size_in = 75  
+window_size_out = 10  
+window_shift = 1  
+
+batch_size = 64  
+max_epochs = 50  
+learning_rate = 0.001  
+
+hidden_dim_1 = 128  
+hidden_dim_2 = 64  
+
+num_layers = 2  
+dropout_rate = 0  
+
+### dataset
+Loading dataset from:  Data/processed_bal/dataset-75-10-1.pt  
+class samples: [21236, 5991, 21236, 7251, 145, 1878, 3621]  
+class weights: [0.4127626940774426, 1.4630994110212938, 0.4127626940774426, 1.2088578915223516, 60.4512315270936, 4.6674273543283125, 2.420720400836391]  
+Train samples: 39268, Val samples: 9818, Test samples: 12272  
+
 ### training
 ### results
 
 
-## run-7
+## run-10
+### configs
+model_name = "STGATLSTM"  
+
+window_size_in = 75  
+window_size_out = 10  
+window_shift = 1  
+
+batch_size = 64  
+max_epochs = 50  
+learning_rate = 0.001  
+
+hidden_dim_1 = 128  
+hidden_dim_2 = 64  
+
+num_layers = 2  
+dropout_rate = 0  
+
+### dataset
+Loading dataset from:  Data/processed_bal/dataset-75-10-1.pt  
+class samples: [21236, 5991, 21236, 7251, 145, 1878, 3621]  
+class weights: [0.4127626940774426, 1.4630994110212938, 0.4127626940774426, 1.2088578915223516, 60.4512315270936, 4.6674273543283125, 2.420720400836391]  
+Train samples: 39268, Val samples: 9818, Test samples: 12272  
+
+### training
+### results
+|     Class     | Precision |  Recall  | F1-Score | Support |
+|---------------|-----------|----------|----------|---------|
+|     no fe     |   0.98    |   0.95   |   0.97   |  72,172 |
+|   ctrl fail   |   0.89    |   0.97   |   0.93   |  5,114  |
+|    crit acc   |   0.96    |   0.97   |   0.96   |  29,599 |
+|   pick fail   |   0.89    |   0.99   |   0.94   |  9,762  |
+|    rel fail   |   0.90    |   0.99   |   0.94   |   101   |
+|   collision   |   0.85    |   1.00   |   0.92   |  2,034  |
+|     thrown    |   0.95    |   0.99   |   0.97   |  3,938  |
+|   Accuracy    |           |          |   0.96   | 122,720 |
+|   Macro Avg   |   0.92    |   0.98   |   0.95   | 122,720 |
+| Weighted Avg  |   0.96    |   0.96   |   0.96   | 122,720 |
+
+
+## run-11
 ### configs
 ### dataset
 ### training
