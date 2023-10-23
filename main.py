@@ -9,7 +9,8 @@ import torch.optim as optim
 import config as cfg
 from input_pipeline.graph_dataloader import Temporal_Graph_Dataset, Balanced_Dataset
 from input_pipeline.balance_dataset import Data_Balancer
-from models.graph_models import STGCNLSTM, STGCN4LSTM
+from models.graph_models import STGCNLSTM, STGCN4LSTM, STGATLSTM
+from models.basic_models import Simple_LSTM, Simple_RNN
 from trainer import Trainer, create_train_loss_graph
 from evaluate import Evaluate_Model
 
@@ -28,6 +29,12 @@ def get_model(model_name, model_configs):
         model = STGCNLSTM(model_configs)
     elif model_name == "STGCN4LSTM":
         model = STGCN4LSTM(model_configs)
+    elif model_name == "STGATLSTM":
+        model = STGATLSTM(model_configs)
+    elif model_name == "RNN":
+        model = Simple_RNN(model_configs)
+    elif model_name == "LSTM":
+        model = Simple_LSTM(model_configs)
     else:
         raise f"Model {model_name} not implemented"
     return model
@@ -92,6 +99,7 @@ def run_main():
         "HIDDEN_DIM_1": cfg.hidden_dim_1,
         "HIDDEN_DIM_2": cfg.hidden_dim_2,
         "NUM_LAYERS": cfg.num_layers,
+        "NUM_HEADS": cfg.num_heads,
         "DROPOUT_RATE": cfg.dropout_rate,
     }
     model = get_model(cfg.model_name, model_configs)

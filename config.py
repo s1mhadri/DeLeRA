@@ -50,18 +50,21 @@ mean_std_path = "Data/normal_params/mean_std.pt"
 #################### Optional Parameters to change ####################
 start_epoch = 0
 
-window_size_in = 50
+model_name = "STGATLSTM"  # STGCNLSTM, STGCN4LSTM, LSTM, STGATLSTM, RNN
+
+window_size_in = 75
 window_size_out = 10
 window_shift = 1
 
-batch_size = 16
-max_epochs = 10
+batch_size = 64
+max_epochs = 50
 learning_rate = 0.001
 
-hidden_dim_1 = 64
-hidden_dim_2 = 32
+hidden_dim_1 = 128
+hidden_dim_2 = 64
 
 num_layers = 2
+num_heads = 8
 dropout_rate = 0
 
 ################ Necessary Parameters to check before running the code ################
@@ -73,13 +76,14 @@ bal_type = "max"
 run_num = 0
 
 csv_dir = f"Data/csv-{set_type}/"
-dataset_path = f"Data/processed_bal/dataset-{window_size_in}-{window_size_out}-{window_shift}.pt"
+dataset_path = (
+    f"Data/processed_bal/dataset-{window_size_in}-{window_size_out}-{window_shift}.pt"
+)
 
-model_name = "STGCN4LSTM"
-model_path = f"runs/run{run_num}-{model_name}-{set_type}/model-top"
+model_path = f"runs/run-{model_name}-{set_type}-{run_num}/model-top"
 
-loss_graph_save_path = f"Images/loss_graphs/run-{run_num}.png"
-cm_save_path = f"Images/confusion_matrices/run-{run_num}.png"
+loss_graph_save_path = f"Images/loss_graphs/run-{model_name}-{run_num}.png"
+cm_save_path = f"Images/confusion_matrices/run-{model_name}-{run_num+1}.png"
 
 """
 train_flag: default: 'fresh'
@@ -88,4 +92,4 @@ train_flag: default: 'fresh'
     'eval' - evaluate the model
     'none' - do nothing. Used for creating the dataset
 """
-train_flag = "none"
+train_flag = "eval"
