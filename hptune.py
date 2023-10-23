@@ -10,7 +10,7 @@ import torch.optim as optim
 import config as cfg
 from input_pipeline.graph_dataloader import Temporal_Graph_Dataset, Balanced_Dataset
 from input_pipeline.balance_dataset import Data_Balancer
-from models.graph_models import STGCNLSTM, STGCN4LSTM
+from models.graph_models import STGCNLSTM, STGCN4LSTM, STGATLSTM
 from trainer import Trainer, create_train_loss_graph
 from evaluate import Evaluate_Model
 
@@ -45,9 +45,10 @@ def train_func():
         "HIDDEN_DIM_1": wbconfigs.HIDDEN_DIM_1,
         "HIDDEN_DIM_2": wbconfigs.HIDDEN_DIM_2,
         "NUM_LAYERS": wbconfigs.NUM_LAYERS,
+        "NUM_HEADS": wbconfigs.NUM_HEADS,
         "DROPOUT_RATE": wbconfigs.DROPOUT_RATE,
     }
-    model = STGCN4LSTM(model_configs)
+    model = STGATLSTM(model_configs)
     # Define loss function and optimizer
     class_weights = torch.tensor(class_weights)
     criterion = nn.CrossEntropyLoss(weight=class_weights.to(cfg.device))
@@ -67,17 +68,26 @@ def train_func():
         max_epochs=wbconfigs.MAX_EPOCHS,
         log_flag=True,
     )
+
     # Evaluate the model
     evaluator = Evaluate_Model(trained_model, val_loader, cfg.device)
     predicts, targets = evaluator.evaluate()
-    precision, recall, f1_score = evaluator.check_metrics(predicts, targets)
+    precision, recall, f1_score, accuracy = evaluator.check_metrics(predicts, targets)
+
     # Log the metrics
-    wandb.log({"precision": precision, "recall": recall, "f1_score": f1_score})
+    wandb.log(
+        {
+            "precision": precision,
+            "recall": recall,
+            "f1_score": f1_score,
+            "accuracy": accuracy,
+        }
+    )
 
 
 # Configuration for the hyperparameter tuning.
 sweep_config = {
-    "name": "DeLeRA-hptune",
+    "name": "DeLeRA-hptune-4",
     "parameters": {
         "WIN_SIZE_IN": {"values": [25, 35, 50, 60, 75, 90]},
         "WIN_SIZE_OUT": {"values": [5, 10, 15]},
@@ -86,7 +96,7 @@ sweep_config = {
         "MAX_EPOCHS": {
             "distribution": "int_uniform",
             "min": 10,
-            "max": 75,
+            "max": 50,
         },
         "LEARNING_RATE": {
             "distribution": "log_uniform_values",
@@ -96,6 +106,11 @@ sweep_config = {
         "HIDDEN_DIM_1": {"values": [16, 32, 64, 128]},
         "HIDDEN_DIM_2": {"values": [16, 32, 64, 128]},
         "NUM_LAYERS": {"values": [1, 2, 3, 4]},
+        "NUM_HEADS": {
+            "distribution": "int_uniform",
+            "min": 1,
+            "max": 16,
+        },
         "DROPOUT_RATE": {
             "distribution": "uniform",
             "min": 0,
@@ -103,11 +118,11 @@ sweep_config = {
         },
     },
     "metric": {"goal": "maximize", "name": "f1_score"},
-    "method": "bayes",
+    "method": "random",
 }
 
 # Create a sweep
-sweep_id = wandb.sweep(sweep_config, project="DeLeRA")
+sweep_id = wandb.sweep(sweep_config, project="DeLeRA-4")
 
 # Perfrom the sweep
-wandb.agent(sweep_id, function=train_func, count=100)
+wandb.agent(sweep_id, function=train_func, count=50)
