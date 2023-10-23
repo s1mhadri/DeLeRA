@@ -19,7 +19,7 @@ class Balanced_Dataset(Dataset):
         self.data_list = None
         self.class_weights = None
         self.class_samples = None
-    
+
     def __len__(self):
         return len(self.data_list)
 
@@ -145,7 +145,7 @@ class Temporal_Graph_Dataset(Dataset):
             torch.save(data_list, self.processed_dir)
             print("Dataset created and saved at: ", self.processed_dir)
         return data_list
-    
+
     def normalize_data(self, data):
         mean, std = torch.load(cfg.mean_std_path)
         return z_score(data, mean, std)

@@ -110,4 +110,3 @@ def create_csv_files(bagfiles_path, csv_dir_path):
     csvfiles = glob.glob(csv_dir_path + "/*.csv")
 
     return f"{len(csvfiles)} CSV files created successfully"
-
