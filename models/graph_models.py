@@ -155,7 +155,9 @@ class STGATLSTM(nn.Module):
         self.dropout_rate = configs["DROPOUT_RATE"]
 
         # Spatial Graph Convolution Layers
-        self.gat1 = GATConv(self.num_features, self.hidden_dim_1, heads=8, concat=False)
+        self.gat1 = GATConv(
+            self.num_features, self.hidden_dim_1, heads=self.num_heads, concat=False
+        )
         # LSTM Layer
         self.lstm = nn.LSTM(
             self.num_nodes * self.hidden_dim_1,
