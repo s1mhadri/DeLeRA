@@ -66,10 +66,11 @@ class Evaluate_Model:
         labels = [0, 1, 2, 3, 4, 5, 6]
         cm = confusion_matrix(targets, predicts, labels=labels).T
         plt.figure(figsize=(10, 10))
-        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
-        plt.xlabel("True Label")
-        plt.ylabel("Predicted Label")
-        plt.title("Confusion Matrix")
+        # increase font size of labels in the heatmap
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", annot_kws={"size": 20})
+        plt.xlabel("True Label", fontsize=20)
+        plt.ylabel("Predicted Label", fontsize=20)
+        plt.title("Confusion Matrix", fontsize=20)
         if save_flag and save_path is not None:
             plt.savefig(save_path)
         else:

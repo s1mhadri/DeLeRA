@@ -120,16 +120,16 @@ class Trainer:
 
 
 def create_train_loss_graph(train_losses, val_losses, save_flag=False, save_path=None):
-    total_x = 500
+    total_x = 100
     train_loss_len = len(train_losses)
     val_loss_len = len(val_losses)
-    gcds = gcd(train_loss_len, val_loss_len)
-    if total_x > gcds:
-        factor_train = train_loss_len // gcds
-        factor_val = val_loss_len // gcds
-    else:
-        factor_train = train_loss_len // total_x
-        factor_val = val_loss_len // total_x
+    # gcds = gcd(train_loss_len, val_loss_len)
+    # if total_x > gcds:
+    #     factor_train = train_loss_len // gcds
+    #     factor_val = val_loss_len // gcds
+    # else:
+    factor_train = train_loss_len // total_x
+    factor_val = val_loss_len // total_x
 
     # create moving average of train losses
     train_losses = [
