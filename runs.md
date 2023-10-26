@@ -409,11 +409,23 @@ Train samples: 39268, Val samples: 9818, Test samples: 12272
 
 ### training
 ### results
+|     Class     | Precision |  Recall  | F1-Score | Support |
+|---------------|-----------|----------|----------|---------|
+|     no fe     |   0.98    |   0.95   |   0.97   |  72,172 |
+|   ctrl fail   |   0.89    |   0.97   |   0.93   |  5,114  |
+|    crit acc   |   0.96    |   0.97   |   0.96   |  29,599 |
+|   pick fail   |   0.89    |   0.99   |   0.94   |  9,762  |
+|    rel fail   |   0.90    |   0.99   |   0.94   |   101   |
+|   collision   |   0.85    |   1.00   |   0.92   |  2,034  |
+|     thrown    |   0.95    |   0.99   |   0.97   |  3,938  |
+|   Accuracy    |           |          |   0.96   | 122,720 |
+|   Macro Avg   |   0.92    |   0.98   |   0.95   | 122,720 |
+| Weighted Avg  |   0.96    |   0.96   |   0.96   | 122,720 |
 
 
 ## run-10
 ### configs
-model_name = "STGATLSTM"  
+model_name = "STGCN4LSTM"   
 
 window_size_in = 75  
 window_size_out = 10  
@@ -440,14 +452,14 @@ Train samples: 39268, Val samples: 9818, Test samples: 12272
 |     Class     | Precision |  Recall  | F1-Score | Support |
 |---------------|-----------|----------|----------|---------|
 |     no fe     |   0.98    |   0.95   |   0.97   |  72,172 |
-|   ctrl fail   |   0.89    |   0.97   |   0.93   |  5,114  |
-|    crit acc   |   0.96    |   0.97   |   0.96   |  29,599 |
-|   pick fail   |   0.89    |   0.99   |   0.94   |  9,762  |
-|    rel fail   |   0.90    |   0.99   |   0.94   |   101   |
-|   collision   |   0.85    |   1.00   |   0.92   |  2,034  |
-|     thrown    |   0.95    |   0.99   |   0.97   |  3,938  |
+|   ctrl fail   |   0.90    |   0.96   |   0.93   |  5,114  |
+|    crit acc   |   0.95    |   0.96   |   0.96   |  29,599 |
+|   pick fail   |   0.88    |   0.99   |   0.93   |  9,762  |
+|    rel fail   |   0.89    |   0.99   |   0.94   |   101   |
+|   collision   |   0.84    |   1.00   |   0.91   |  2,034  |
+|     thrown    |   0.94    |   0.99   |   0.97   |  3,938  |
 |   Accuracy    |           |          |   0.96   | 122,720 |
-|   Macro Avg   |   0.92    |   0.98   |   0.95   | 122,720 |
+|   Macro Avg   |   0.91    |   0.98   |   0.94   | 122,720 |
 | Weighted Avg  |   0.96    |   0.96   |   0.96   | 122,720 |
 
 
