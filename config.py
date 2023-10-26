@@ -50,7 +50,7 @@ mean_std_path = "Data/normal_params/mean_std.pt"
 #################### Optional Parameters to change ####################
 start_epoch = 0
 
-model_name = "STGATLSTM"  # STGCNLSTM, STGCN4LSTM, LSTM, STGATLSTM, RNN
+model_name = "STGCN4LSTM"  # STGCNLSTM, STGCN4LSTM, LSTM, STGATLSTM, RNN
 
 window_size_in = 75
 window_size_out = 10
@@ -92,4 +92,4 @@ train_flag: default: 'fresh'
     'eval' - evaluate the model
     'none' - do nothing. Used for creating the dataset
 """
-train_flag = "eval"
+train_flag = "fresh"
