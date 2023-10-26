@@ -7,6 +7,7 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     f1_score,
+    accuracy_score,
     classification_report,
 )
 
@@ -38,7 +39,8 @@ class Evaluate_Model:
         precision = precision_score(targets, predicts, average="macro")
         recall = recall_score(targets, predicts, average="macro")
         f1 = f1_score(targets, predicts, average="macro")
-        return precision, recall, f1
+        accuracy = accuracy_score(targets, predicts)
+        return precision, recall, f1, accuracy
 
     def check_classification_report(self, predicts, targets):
         predicts = np.concatenate(predicts).ravel()
