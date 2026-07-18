@@ -6,18 +6,29 @@ This repository contains the implementation of DeLeRA (Deep Learning-based Risk 
 
 ## Getting Started
 
+### Prerequisites
+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (Python package/project manager)
+- Python 3.10+ (uv will install this automatically if needed)
+
 ### Installation
 
-Install dependencies via 
+1. Install dependencies: 
 ```sh
-pip install -r requirements.txt
+uv sync
+```
+
+2. Activate the environment (optional — `uv run` handles this automatically):
+```sh
+   source .venv/bin/activate   # macOS/Linux
+   .venv\Scripts\activate      # Windows
 ```
 
 ### Preprocessing
 
 Prepare the dataset by converting raw bag files into a usable format.  
 ```sh
-python3 preprocess.py
+uv run preprocess.py
 ```
 
 ### Configuration
@@ -29,18 +40,18 @@ Adjust [config.py](./config.py)
 - To evaluate the model, set `train_flag = "eval"`.
 - Choose the path to save the model and output images.
 
-### Execution
+### Running the pipeline
 
 Run using
 ```sh
-python3 main.py
+uv run main.py
 ```
 
 ## Hyperparameter tuning
 
 The hyperparameters can be tuned using [hptune.py](./hptune.py) script.  
 ```sh
-python3 hptune.py
+uv run hptune.py
 ```
 
 Note: This uses [wandb](https://wandb.ai/site/) for logging the results. Make sure to set the `API_key` in terminal before running. Follow instructions [here](https://wandb.ai/quickstart?utm_source=app-resource-center&utm_medium=app&utm_term=quickstart)
