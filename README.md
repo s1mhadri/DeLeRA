@@ -1,32 +1,49 @@
 # Deep Learning based Risk Assessment for Franka Emika Panda Manipulator
 
-This repository contains the code for trainng and evaluating the risk assessment model for Franka Emika Panda Manipulator.
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/s1mhadri/DeLeRA)
 
-#### Requirements
-Before running the script, make sure the requirements are met by installing from requirements.txt using  
-```pip install -r requirements.txt```
+This repository contains the implementation of DeLeRA (Deep Learning-based Risk Assessment), a framework designed to identify and classify operational faults in the Franka Emika Panda manipulator using spatio-temporal deep learning models. By representing the robotic arm as a graph and analyzing joint-state dynamics, DeLeRA provides high-accuracy risk assessment across various failure modes.
 
-## Prerequisites
+## Getting Started
 
-Prepare the dataset running the [preprocess.py](./preprocess.py) script.  
-```python3 preprocess.py```
+### Installation
 
-## How to run the code
+Install dependencies via 
+```sh
+pip install -r requirements.txt
+```
 
-- Make sure the [config.py](./config.py) is updated with the correct paths for the dataset, select the model, set the hyperparameters, choose the path to save the model and images.
-- To train the model from scratch, set `train_flag = "fresh"` in [config.py](./config.py)
-- To resume training from a checkpoint, set `train_flag = "continue"` in [config.py](./config.py)
-- To evaluate the model, set `train_flag = "eval"` in [config.py](./config.py)
+### Preprocessing
 
-run [main.py](./main.py) using  
-```python3 main.py```
+Prepare the dataset by converting raw bag files into a usable format.  
+```sh
+python3 preprocess.py
+```
+
+### Configuration
+
+Adjust [config.py](./config.py)
+- Set your desired model (e.g., STGATLSTM)
+- To train the model from scratch, set `train_flag = "fresh"`.
+- To resume training from a checkpoint, set `train_flag = "continue"`.
+- To evaluate the model, set `train_flag = "eval"`.
+- Choose the path to save the model and output images.
+
+### Execution
+
+Run using
+```sh
+python3 main.py
+```
 
 ## Hyperparameter tuning
 
 The hyperparameters can be tuned using [hptune.py](./hptune.py) script.  
-```python3 hptune.py```
+```sh
+python3 hptune.py
+```
 
-Note: This uses wandb for logging the results. Make sure to set the `API_key` in terminal before running. Follow instructions [here](https://wandb.ai/quickstart?utm_source=app-resource-center&utm_medium=app&utm_term=quickstart)
+Note: This uses [wandb](https://wandb.ai/site/) for logging the results. Make sure to set the `API_key` in terminal before running. Follow instructions [here](https://wandb.ai/quickstart?utm_source=app-resource-center&utm_medium=app&utm_term=quickstart)
 
 ## Results
 
